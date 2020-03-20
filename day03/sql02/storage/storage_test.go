@@ -74,7 +74,7 @@ func TestDummyStorage(t *testing.T) {
 }
 
 func TestMysqlStorage(t *testing.T) {
-	db, err := sql.Open("mysql", "root:pw@/test")
+	db, err := sql.Open("mysql", "root:my-secret-pw@/test")
 
 	if err != nil {
 		t.Skip("Cannot connect to DB")
