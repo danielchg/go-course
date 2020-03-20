@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"sql02/storage"
+	"strconv"
 )
 
 func main() {
@@ -83,7 +84,22 @@ func createUser(s storage.Storage, r *http.Request) (interface{}, int) {
 }
 
 func getUser(s storage.Storage, r *http.Request) (interface{}, int) {
-	return nil, http.StatusOK
+	id, err := strconv.Atoi(r.URL.Path)
+
+	if err != nil {
+		return Error{"Invalid ID"}, http.StatusBadRequest
+	}
+
+	u, err := s.GetUser(id)
+
+	switch err {
+	case nil:
+		return u, http.StatusOK
+	case storage.ErrNotFound:
+		return Error{"User not found"}, http.StatusNotFound
+	default:
+		return Error{"Internal Server Error"}, http.StatusInternalServerError
+	}
 }
 
 func updateUser(s storage.Storage, r *http.Request) (interface{}, int) {
