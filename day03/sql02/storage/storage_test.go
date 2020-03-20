@@ -1,14 +1,12 @@
 package storage_test
 
 import (
+	"database/sql"
 	"sql02/storage"
 	"testing"
 )
 
-func TestDummyStorage(t *testing.T) {
-	// Create new storage
-	s := storage.NewDummyStorage()
-
+func testStorage(t *testing.T, s storage.Storage) {
 	s.CreateUser(&storage.User{ID: 34, Name: "Extra", Age: 21})
 
 	u := storage.User{
@@ -68,4 +66,21 @@ func TestDummyStorage(t *testing.T) {
 	if err := s.DeleteUser(u.ID); err != storage.ErrNotFound {
 		t.Fatalf("Expected %s got %s", storage.ErrNotFound, err)
 	}
+}
+
+func TestDummyStorage(t *testing.T) {
+	s := storage.NewDummyStorage()
+	testStorage(t, s)
+}
+
+func TestMysqlStorage(t *testing.T) {
+	db, err := sql.Open("mysql", "root:pw@/test")
+
+	if err != nil {
+		t.Skip("Cannot connect to DB")
+		return
+	}
+
+	s := storage.NewMySQL(db)
+	testStorage(t, s)
 }
