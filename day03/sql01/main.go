@@ -14,7 +14,7 @@ var (
 )
 
 func main() {
-	db, err := sql.Open("mysql", "root:my-secret-pw@/test")
+	db, err := sql.Open("mysql", "root:pass@/test")
 	age := 27
 	q := `
 select
